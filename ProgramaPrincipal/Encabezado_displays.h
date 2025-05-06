@@ -16,4 +16,9 @@ void mostrar_digito(uint8_t numero);
 // Cambia los segmentos activos directamente (nivel alto = encendido)
 void escribir_segmentos(uint8_t valor);
 
+// Cambia el valor de valor_display_1
+void set_display_1(uint8_t valor);
+// Cambia el valor de valor_display_2
+void set_display_2(uint8_t valor);
+
 #endif
