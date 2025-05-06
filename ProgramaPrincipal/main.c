@@ -4,20 +4,17 @@
 #include "encabezado_displays.h"
 #include "encabezado_sensores.h"
 
-extern volatile uint8_t valor_display_1;
-extern volatile uint8_t valor_display_2;
-
 int main(void) {
-    init_displays();
-    init_timer0();
+	init_displays();   // Configura pines de displays
+	init_timer0();     // Activa multiplexado con Timer0
+	sensores_init();   // Configura sensores con interrupciones
 
-    // Mostrar 3 y 7 en los displays
-    valor_display_1 = 3;
-    valor_display_2 = 7;
+	// Mostrar 3 y 7 en los displays al arrancar
+	set_display_1(5);
+	set_display_2(5);
 
-    while (1) {
-        // Aquí podrías actualizar los valores en tiempo real si quieres
-        // valor_display_1 = nueva_valor1;
-        // valor_display_2 = nueva_valor2;
-    }
+	while (1) {
+		
+	}
 }
+
