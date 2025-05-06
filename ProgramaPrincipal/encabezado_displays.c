@@ -4,7 +4,7 @@
 
 #define DS_PIN PK7
 
-// Segmentos en nivel alto: g f e d c b a → PK6..PK0
+// Segmentos en nivel alto: g f e d c b a ? PK6..PK0
 const uint8_t tabla_segmentos[10] = {
 	0b0111111, // 0
 	0b0000110, // 1
@@ -67,7 +67,7 @@ void mostrar_digito(uint8_t numero) {
 void init_timer0(void) {
 	TCCR0A = (1 << WGM01); // Modo CTC
 	TCCR0B = (1 << CS01) | (1 << CS00); // Prescaler 64
-	OCR0A = 124; // Para 1 ms: (8MHz/64) = 125kHz → 125 ciclos = 1 ms
+	OCR0A = 124; // Para 1 ms: (8MHz/64) = 125kHz ? 125 ciclos = 1 ms
 	TIMSK0 = (1 << OCIE0A); // Habilitar interrupción por comparación
 	sei(); // Activar interrupciones globales
 }
