@@ -2,6 +2,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "encabezado_displays.h"
+#include "encabezado_sensores.h"
 
 extern volatile uint8_t valor_display_1;
 extern volatile uint8_t valor_display_2;
