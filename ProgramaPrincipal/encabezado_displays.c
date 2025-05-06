@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 #include "encabezado_displays.h"
 
-#define DS_PIN PK7
+#define DS_PIN PL7
 
 // Segmentos en nivel alto: g f e d c b a → PK6..PK0
 const uint8_t tabla_segmentos[10] = {
@@ -23,20 +23,38 @@ volatile uint8_t valor_display_1 = 0;
 volatile uint8_t valor_display_2 = 0;
 
 void init_displays(void) {
-    DDRK = 0xFF;  // PK0-PK7 como salidas (segmentos y Ds)
+    //displays como salidas (segmentos y Ds)
+	DDRB |= (1<<PB1) | (1<<PB2) | (1<<PB3) | (1<<PB4); //DA, DB, DC, DD
+	DDRD |= (1<<PD6) | (1<<PD7); //DE, DF
+	DDRK |= (1<<PK7); //DG
+	DDRL |= (1<<DS_PIN); //DS
+
 }
 
 void activar_display(uint8_t estado) {
     if (estado == 0) {
-        PORTK &= ~(1 << DS_PIN);
+        PORTL &= ~(1 << DS_PIN);
     } else {
-        PORTK |= (1 << DS_PIN);
+        PORTL |= (1 << DS_PIN);
     }
 }
 
 void escribir_segmentos(uint8_t valor) {
-    PORTK = (PORTK & (1 << DS_PIN)) | (valor & 0x7F);
+    // Limpiar pines usados
+    PORTB &= ~((1 << PB1) | (1 << PB2) | (1 << PB3) | (1 << PB4)); // a-d
+    PORTD &= ~((1 << PD6) | (1 << PD7));                           // e-f
+    PORTK &= ~(1 << PK7);                                          // g
+
+    // Establecer los bits según el valor
+    if (valor & (1 << 0)) PORTB |= (1 << PB1); // a
+    if (valor & (1 << 1)) PORTB |= (1 << PB2); // b
+    if (valor & (1 << 2)) PORTB |= (1 << PB3); // c
+    if (valor & (1 << 3)) PORTB |= (1 << PB4); // d
+    if (valor & (1 << 4)) PORTD |= (1 << PD6); // e
+    if (valor & (1 << 5)) PORTD |= (1 << PD7); // f
+    if (valor & (1 << 6)) PORTK |= (1 << PK7); // g
 }
+
 
 void mostrar_digito(uint8_t numero) {
     if (numero < 10) {
