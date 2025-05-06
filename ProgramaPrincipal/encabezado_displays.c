@@ -54,6 +54,14 @@ void init_timer0(void) {
     sei(); // Activar interrupciones globales
 }
 
+void set_display_1(uint8_t valor) {
+    valor_display_1 = valor;
+}
+
+void set_display_2(uint8_t valor) {
+    valor_display_2 = valor;
+}
+
 ISR(TIMER0_COMPA_vect) {
     if (display_activo == 0) {
         activar_display(0);
