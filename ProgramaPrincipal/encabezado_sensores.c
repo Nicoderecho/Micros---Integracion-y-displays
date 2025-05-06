@@ -1,4 +1,5 @@
 #include "encabezado_sensores.h"
+#include "encabezado_displays.h"
 #include <avr/interrupt.h>
 
 void sensores_init(void) {
@@ -22,4 +23,7 @@ void manejar_bolo_caido(void) {
     // Enciende un LED en PB0 (por ejemplo)
     DDRB |= (1 << PB0);
     PORTB |= (1 << PB0);
+
+    // Mostrar el número 1 en el display 1
+    set_display_1(1);
 }
