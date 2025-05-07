@@ -5,7 +5,7 @@
 volatile uint8_t bolos_caidos = 0;
 volatile uint8_t estados_bolos[6] = {0};
 volatile uint8_t reinicio_pendiente = 0;
-//volatile uint8_t estado_anterior = 0xFF;  // Con pull-ups activos, el estado inicial es todo 1
+volatile uint8_t estado_anterior = 0xFF;  // Con pull-ups activos, el estado inicial es todo 1
 
 
 void sensores_init(void) {
@@ -24,7 +24,7 @@ void sensores_init(void) {
 void iniciar_timer1(void) {
 	TCCR1A = 0;
 	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // Modo CTC, prescaler 1024
-	OCR1A = 7812; // 1 segundo si F_CPU = 8 MHz
+	OCR1A = 2*7812; // 2 segundos si F_CPU = 8 MHz
 	TIMSK1 |= (1 << OCIE1A); // Habilita interrupción por comparación
 	TCNT1 = 0;
 }
@@ -32,18 +32,26 @@ void iniciar_timer1(void) {
 
 // ISR para interrupciones de cambio en pines PCINT16–23 (Puerto K)
 ISR(PCINT2_vect) {
+	uint8_t estado_actual = (0b00111111)&PINK;
+	uint8_t cambios = estado_anterior ^ estado_actual;      // Bits que han cambiado
+	uint8_t caidas = cambios & ~estado_actual;              // Cambios que pasaron de 1 a 0
+
 	for (int i = 0; i < 6; i++) {
-		if (!(PINK & (1 << i)) && estados_bolos[i] == 0) {
+		if ((caidas & (1 << i)) && estados_bolos[i] == 0) {
 			estados_bolos[i] = 1;
 			bolos_caidos++;
 			mostrar_numero(bolos_caidos); // Mostrar en displays
+
 			if (!reinicio_pendiente) {
-				iniciar_timer1(); // Inicia cuenta atrás de 1 segundo
+				iniciar_timer1(); // Inicia cuenta atrás de 2 segundos
 				reinicio_pendiente = 1;
 			}
 		}
 	}
+
+	estado_anterior = estado_actual;  // Actualiza para la próxima interrupción
 }
+
 
 ISR(TIMER1_COMPA_vect) {
 	for (int i = 0; i < 6; i++) estados_bolos[i] = 0; // Solo reiniciar estados
