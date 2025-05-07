@@ -5,6 +5,7 @@
 volatile uint8_t bolos_caidos = 0;
 volatile uint8_t estados_bolos[6] = {0};
 volatile uint8_t reinicio_pendiente = 0;
+//volatile uint8_t estado_anterior = 0xFF;  // Con pull-ups activos, el estado inicial es todo 1
 
 
 void sensores_init(void) {
@@ -35,7 +36,7 @@ ISR(PCINT2_vect) {
 		if (!(PINK & (1 << i)) && estados_bolos[i] == 0) {
 			estados_bolos[i] = 1;
 			bolos_caidos++;
-			set_display_1(bolos_caidos); // Mostrar en displays
+			mostrar_numero(bolos_caidos); // Mostrar en displays
 			if (!reinicio_pendiente) {
 				iniciar_timer1(); // Inicia cuenta atrás de 1 segundo
 				reinicio_pendiente = 1;
