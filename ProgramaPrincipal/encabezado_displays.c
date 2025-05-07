@@ -80,6 +80,14 @@ void set_display_2(uint8_t valor) {
 	valor_display_2 = valor;
 }
 
+void mostrar_numero(uint8_t numero) {
+	uint8_t unidades = numero % 10;
+	uint8_t decenas = numero / 10;
+
+	set_display_1(unidades);
+	set_display_2(decenas);
+}
+
 ISR(TIMER0_COMPA_vect) {
 	if (display_activo == 0) {
 		activar_display(0);
